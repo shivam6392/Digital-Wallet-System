@@ -7,7 +7,8 @@ exports.getBalance = async (req, res) => {
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.json({ balance: user.wallet_balance });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('GetBalance Error:', error);
+        res.status(500).json({ message: error.message || 'Server error' });
     }
 };
 
@@ -30,7 +31,8 @@ exports.addMoney = async (req, res) => {
 
         res.json({ message: 'Money added successfully', balance: user.wallet_balance });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('AddMoney Error:', error);
+        res.status(500).json({ message: error.message || 'Server error' });
     }
 };
 
@@ -66,7 +68,8 @@ exports.transfer = async (req, res) => {
 
         res.json({ message: 'Transfer successful', balance: sender.wallet_balance });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('Transfer Error:', error);
+        res.status(500).json({ message: error.message || 'Server error' });
     }
 };
 
@@ -81,7 +84,8 @@ exports.getTransactions = async (req, res) => {
 
         res.json(transactions);
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('GetTransactions Error:', error);
+        res.status(500).json({ message: error.message || 'Server error' });
     }
 };
 
@@ -90,6 +94,7 @@ exports.getUsers = async (req, res) => {
         const users = await User.find({ _id: { $ne: req.user.id } }).select('name email');
         res.json(users);
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('GetUsers Error:', error);
+        res.status(500).json({ message: error.message || 'Server error' });
     }
 };

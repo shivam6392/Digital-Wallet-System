@@ -16,7 +16,8 @@ exports.register = async (req, res) => {
 
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('Register Error:', error);
+        res.status(500).json({ message: error.message || 'Server error' });
     }
 };
 
@@ -42,7 +43,8 @@ exports.login = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('Login Error:', error);
+        res.status(500).json({ message: error.message || 'Server error' });
     }
 };
 
@@ -51,6 +53,7 @@ exports.me = async (req, res) => {
         const user = await User.findById(req.user.id).select('-password_hash');
         res.json(user);
     } catch (error) {
-        res.status(500).json({ message: 'Server error' });
+        console.error('Me Error:', error);
+        res.status(500).json({ message: error.message || 'Server error' });
     }
 };

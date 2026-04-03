@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { LogOut, Plus, Send, WalletCards, ArrowUpRight, ArrowDownLeft, Clock } from 'lucide-react';
 import api from '../services/api';
 import TransferModal from '../components/TransferModal';
+import AddMoneyModal from '../components/AddMoneyModal';
 
 export default function Dashboard() {
     const [balance, setBalance] = useState(0);
@@ -34,19 +35,6 @@ export default function Dashboard() {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         navigate('/login');
-    };
-
-    const handleAddMoney = async (e) => {
-        e.preventDefault();
-        if (!addAmount || isNaN(addAmount) || addAmount <= 0) return;
-        try {
-            await api.post('/wallet/add', { amount: Number(addAmount) });
-            setAddAmount('');
-            setShowAddModal(false);
-            fetchData();
-        } catch (err) {
-            alert(err.response?.data?.message || 'Error adding money');
-        }
     };
 
     const formatDate = (dateString) => {
@@ -155,27 +143,7 @@ export default function Dashboard() {
             </div>
 
             {/* Add Money Modal */}
-            {showAddModal && (
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50 }}>
-                    <div className="auth-box glass-card" style={{ position: 'relative' }}>
-                        <button onClick={() => setShowAddModal(false)} style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                            <X size={24} />
-                        </button>
-                        <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                            <Plus size={20} color="var(--secondary)" /> Top up Wallet
-                        </h3>
-                        <form onSubmit={handleAddMoney}>
-                            <div className="input-group">
-                                <label className="input-label">Amount to add ($)</label>
-                                <input type="number" autoFocus className="input-field" value={addAmount} onChange={(e) => setAddAmount(e.target.value)} required placeholder="100.00" min="1" />
-                            </div>
-                            <button className="btn btn-secondary" type="submit">
-                                Submit Deposit
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            )}
+            {showAddModal && <AddMoneyModal onClose={() => setShowAddModal(false)} onSuccess={() => { setShowAddModal(false); fetchData(); }} />}
 
             {showTransfer && <TransferModal onClose={() => setShowTransfer(false)} onSuccess={() => { setShowTransfer(false); fetchData(); }} />}
 
